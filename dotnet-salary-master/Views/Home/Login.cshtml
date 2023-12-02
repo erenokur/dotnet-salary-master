@@ -1,0 +1,52 @@
+﻿<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <form id="loginForm" class="form-container">
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email:</label>
+                    <input id="email" type="email" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password:</label>
+                    <input id="password" type="password" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <button type="button" class="btn btn-primary" onclick="login()">Login</button>
+                </div>
+
+                <div id="messageViewer" class="text-danger"></div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script>
+function login() {
+    var email = $('#email').val();
+    var password = $('#password').val();
+
+    $.ajax({
+        url: '/Auth/Login', 
+        method: 'POST',
+        contentType: 'application/json',
+            data: JSON.stringify({ email: email, password: password }),
+        success: function (data) {
+                if (data.accessToken && data.accessToken !== 'null') {
+                    console.log('Login successful');
+                    localStorage.setItem('jwtToken', data.accessToken)
+                    window.location.href = '/Home';
+                } else {
+                        $('#messageViewer').text('Invalid email or password.' + data.accessToken);
+                }   
+        },
+        error: function (error) {
+                $('#messageViewer').text('Request failed.');
+                console.error('Login failed', error);
+        }
+    });
+}
+</script>
+

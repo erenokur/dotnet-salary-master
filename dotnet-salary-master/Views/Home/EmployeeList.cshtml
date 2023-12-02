@@ -1,0 +1,66 @@
+﻿<head>
+ 
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    <link rel="stylesheet" href="~/lib/dx/dx.light.css" />
+    <script src="~/lib/dx/dx.all.js"></script>
+</head>
+
+
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <button type="button" class="btn btn-primary mb-3" id="refreshButton">Refresh Employee Data</button>
+            <div class="dx-viewport">
+                <div id="dataGridContainer"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        loadData();
+    });
+
+    $('#refreshButton').on('click', function () {
+        loadData();
+    });
+
+    function loadData() {
+        var jwtToken = localStorage.getItem('jwtToken');
+
+        $.ajax({
+            url: '/Employee/GetEmployees',
+            method: 'GET',
+            contentType: 'application/json',
+            headers: {
+                'Authorization': 'Bearer ' + jwtToken
+            },
+            success: function (data) {
+                console.log(data);
+                new DevExpress.ui.dxDataGrid("#dataGridContainer", {
+                    dataSource: data,
+                    columns: [
+                        { dataField: "fullName", caption: "Full Name" },
+                        { dataField: "position", caption: "Position" },
+                        { dataField: "grossSalary", caption: "Gross Salary" },
+                        { dataField: "incomeTaxRatio", caption: "Income Tax Ratio" },
+                        { dataField: "employerSgkBurden", caption: "Employer SGK Burden" },
+                        { dataField: "netSalary", caption: "Net Salary" }
+                    ],
+                    paging: { pageSize: 10 },
+                    pager: {
+                        showPageSizeSelector: true,
+                        allowedPageSizes: [5, 10, 20],
+                        showInfo: true
+                    }
+                });
+            },
+            error: function (error) {
+                console.error('Failed to retrieve calculated employee data', error);
+            }
+        });
+    }
+</script>

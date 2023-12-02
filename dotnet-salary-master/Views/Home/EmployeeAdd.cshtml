@@ -1,0 +1,73 @@
+﻿<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <form id="addEmployeeForm" class="form-container">
+                <div class="mb-3">
+                    <label for="firstName" class="form-label">First Name:</label>
+                    <input id="firstName" type="text" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="lastName" class="form-label">Last Name:</label>
+                    <input id="lastName" type="text" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="position" class="form-label">Position:</label>
+                    <input id="position" type="text" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="grossSalary" class="form-label">Gross Salary:</label>
+                    <input id="grossSalary" type="number" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="incomeTaxRatio" class="form-label">Income Tax Ratio:</label>
+                    <input id="incomeTaxRatio" type="number" step="0.01" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <button type="button" class="btn btn-primary" onclick="addEmployee()">Add Employee</button>
+                </div>
+
+                <div id="employeeMessageViewer" class="text-danger"></div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function addEmployee() {
+        var firstName = $('#firstName').val();
+        var lastName = $('#lastName').val();
+        var position = $('#position').val();
+        var grossSalary = parseFloat($('#grossSalary').val());
+        var incomeTaxRatio = parseFloat($('#incomeTaxRatio').val());
+
+        var jwtToken = localStorage.getItem('jwtToken');
+
+        $.ajax({
+            url: '/Employee/AddEmployee', // Update with your actual endpoint
+            method: 'POST',
+            contentType: 'application/json',
+            headers: {
+                'Authorization': 'Bearer ' + jwtToken
+            },
+            data: JSON.stringify({ FirstName: firstName, LastName: lastName, Position: position, GrossSalary: grossSalary, IncomeTaxRatio: incomeTaxRatio }),
+            success: function (data) {
+                console.log('Employee added successfully.');
+                $('#messageViewer').text('Employee added successfully.');
+                $('#firstName').val('');
+                $('#lastName').val('');
+                $('#position').val('');
+                $('#grossSalary').val('');
+                $('#incomeTaxRatio').val('');
+            },
+            error: function (error) {
+                $('#messageViewer').text('Request failed.');
+                console.error('Employee addition failed', error);
+            }
+        });
+    }
+</script>

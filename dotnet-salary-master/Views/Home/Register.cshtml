@@ -1,0 +1,63 @@
+﻿<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <form id="registerForm" class="form-container">
+                <div class="mb-3">
+                    <label for="username" class="form-label">Username:</label>
+                    <input id="username" type="text" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email:</label>
+                    <input id="email" type="email" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password:</label>
+                    <input id="password" type="password" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="customUserRole" class="form-label">User Role:</label>
+                    <select id="customUserRole" class="form-select">
+                        <option value="0">Guest</option>
+                        <option value="1">User</option>
+                        <option value="2">Admin</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <button type="button" class="btn btn-primary" onclick="register()">Register</button>
+                </div>
+
+                <div id="messageViewer" class="text-danger"></div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function register() {
+        var email = $('#email').val();
+        var username = $('#username').val();
+        var password = $('#password').val();
+        var userRole = $('#customUserRole').val();
+
+        $.ajax({
+            url: '/Auth/Register', 
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ Email: email, Password: password, UserName: username, Role: userRole }),
+            success: function (data) {
+                console.log('Registration successful');
+                $('#messageViewer').text('Register successful.');
+                window.location.href = '/Login';
+            },
+            error: function (error) {
+                $('#messageViewer').text('Request failed.');
+                console.error('Registration failed', error);
+            }
+        });
+    }
+</script>
